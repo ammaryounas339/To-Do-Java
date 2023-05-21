@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 class ToDoAppGUI extends JFrame {
-    private List<Task> taskList;
-    private DefaultListModel<String> taskListModel;
-    private JList<String> taskJList;
+    private List<Task> taskList; //list of all tasks
+    private DefaultListModel<String> taskListModel; //used for JList
+    private JList<String> taskJList; 
     private JTextField taskInputField;
     private JComboBox<String> priorityComboBox;
     public ToDoAppGUI() {
@@ -25,21 +25,17 @@ class ToDoAppGUI extends JFrame {
         JButton deleteButton = new JButton("Done");
         JButton editButton = new JButton("Edit");
 
-       // Load the images
+       //Loading images
         Image addImage = new ImageIcon("add.png").getImage();
         Image deleteImage = new ImageIcon("done.jpg").getImage();
         Image editImage = new ImageIcon("edit.png").getImage();
-
-        // Define the desired dimensions for the resized images
         int buttonWidth = 32;
         int buttonHeight = 32;
-
-        // Create scaled versions of the images
+        //Images scaled to smaller size to fit
         Image scaledAddImage = addImage.getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH);
         Image scaledDeleteImage = deleteImage.getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH);
         Image scaledEditImage = editImage.getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH);
-
-        // Create ImageIcon objects from the scaled images
+        //ImageIcon objects from the scaled images
         ImageIcon addIcon = new ImageIcon(scaledAddImage);
         ImageIcon deleteIcon = new ImageIcon(scaledDeleteImage);
         ImageIcon editIcon = new ImageIcon(scaledEditImage);
@@ -47,31 +43,26 @@ class ToDoAppGUI extends JFrame {
         addButton.setIcon(addIcon);
         deleteButton.setIcon(deleteIcon);
         editButton.setIcon(editIcon);
-        // Set layout and add components to the main panel
+        // add components
         JPanel inputPanel = new JPanel();
         inputPanel.add(new JLabel("Task:"));
         inputPanel.add(taskInputField);
         inputPanel.add(new JLabel("Priority:"));
         inputPanel.add(priorityComboBox);
-
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(addButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(editButton);
-
         mainPanel.add(inputPanel, BorderLayout.NORTH);
         mainPanel.add(new JScrollPane(taskJList), BorderLayout.CENTER);
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
-
-        // Set up the main JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("To-Do App");
         setContentPane(mainPanel);
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
-
-        // Add action listeners to buttons
+        // action listeners
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -95,9 +86,10 @@ class ToDoAppGUI extends JFrame {
     }
 
     private void addTask() {
-        String taskDescription = taskInputField.getText().trim();
+        String taskDescription = taskInputField.getText().trim();//get the string inputted
     try{
         if (!taskDescription.isEmpty()) {
+          //Gets value of priority from combo box in uppercase as enum Priority has uppercase 
             Priority priority = Priority.valueOf(priorityComboBox.getSelectedItem().toString().toUpperCase());
             if (priority != null) {
                 Task newTask = new Task(taskDescription, priority);
@@ -117,7 +109,6 @@ class ToDoAppGUI extends JFrame {
     }
     }
     
-
     private void deleteTask() {
         int selectedIndex = taskJList.getSelectedIndex();
      try{
@@ -125,13 +116,11 @@ class ToDoAppGUI extends JFrame {
             Task selectedTask = taskList.get(selectedIndex);
             taskList.remove(selectedIndex);
             updateTaskList();
-    
             String taskDescription = selectedTask.getDescription();
             JLabel messageLabel = new JLabel("<html><font color='red'>Congratulations</font> on completing the task:<br>" +
-                "<font color='blue'>" + taskDescription + "</font></html>");
+                "<font color='blue'>" + taskDescription + "</font></html>"); //html formatted just to add colors
             messageLabel.setFont(new Font("Sans-Serif", Font.BOLD, 16));
-
-            // Create a JOptionPane with the congratulatory message
+            //congo message
             JOptionPane.showMessageDialog(this, messageLabel, "Task Completed", JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(this, "Please select a task to be completed.", "Done",
@@ -141,14 +130,15 @@ class ToDoAppGUI extends JFrame {
         e.printStackTrace();
     }
     }
+
     private void editTask() {
         int selectedIndex = taskJList.getSelectedIndex();
         try {
             if (selectedIndex >= 0) {
                 Task task = taskList.get(selectedIndex);
-                String updatedDescription = JOptionPane.showInputDialog(this, "Edit Task", task.getDescription());
-                if (updatedDescription != null && !updatedDescription.isEmpty()) {
-                    task.setDescription(updatedDescription);
+                String editedDescription = JOptionPane.showInputDialog(this, "Edit Task", task.getDescription());
+                if (editedDescription != null && !editedDescription.isEmpty()) {
+                    task.setDescription(editedDescription);
                     updateTaskList();
                 } else {
                     JOptionPane.showMessageDialog(this, "Please enter a valid task description.", "Edit Task", JOptionPane.WARNING_MESSAGE);
@@ -165,7 +155,6 @@ class ToDoAppGUI extends JFrame {
         List<Task> highPriorityTasks = new ArrayList<>();
         List<Task> mediumPriorityTasks = new ArrayList<>();
         List<Task> lowPriorityTasks = new ArrayList<>();
-        //Categorize tasks based on priority
         for (Task task : taskList) {
             Priority priority = task.getPriority();
             if (priority == Priority.HIGH) {
@@ -177,8 +166,7 @@ class ToDoAppGUI extends JFrame {
                 }
             }
             taskListModel.clear();
-    
-        // Add tasks to the taskListModel in the desired order
+        // Add tasks to list in order of priority
         for (Task task : highPriorityTasks) {
             String elem =  with_color(task);
             taskListModel.addElement(elem);
@@ -197,7 +185,6 @@ class ToDoAppGUI extends JFrame {
         String taskDescription = task.getDescription();
         Priority priority = task.getPriority();
         String colorTag;
-        // Set the color tag based on the priority
         if (priority == Priority.HIGH) {
             colorTag = "<font color='red'>";
         } else if (priority == Priority.MEDIUM) {
@@ -205,7 +192,7 @@ class ToDoAppGUI extends JFrame {
         } else { // Low priority
             colorTag = "<font color='green'>";
         }
-        // Create the HTML-formatted string with the color tag and task description
+        //html formatted string , just to add colors
         String finalString = "<html>" + colorTag+"["+ priority.toString() + "] " + taskDescription + "</font></html>";
 
         return finalString;
