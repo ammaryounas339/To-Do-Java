@@ -1,0 +1,7 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "timingframework-swing-5.0.0.jar",
+        "c:\\Users\\Ammar Younas\\Downloads\\timingframework-swing-5.0.0.jar\\timingframework-swing-5.0.0.jar"
+    ]
+}
